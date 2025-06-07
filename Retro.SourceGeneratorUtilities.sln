@@ -10,6 +10,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "example", "example", "{75BF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Retro.SourceGeneratorUtilities.Generator.Sample", "example\Retro.SourceGeneratorUtilities.Generator.Sample\Retro.SourceGeneratorUtilities.Generator.Sample.csproj", "{4D3E53DA-080D-4462-9DC9-871C5C9AFA96}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{450AA9B1-A4BB-483F-9159-AE688FCCD5A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Retro.SourceGeneratorUtilities.Test", "test\Retro.SourceGeneratorUtilities.Test\Retro.SourceGeneratorUtilities.Test.csproj", "{5CE2B349-C61B-4FC7-A661-EAFC9A4C459C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +23,7 @@ Global
 		{FDAE6BED-5D2E-4B71-86E6-2E9C7CAF2C06} = {2A8AF1CC-1D2D-4637-9B80-AF7E856192A5}
 		{62080E00-B7E1-4085-A25D-E52605A70C1B} = {2A8AF1CC-1D2D-4637-9B80-AF7E856192A5}
 		{4D3E53DA-080D-4462-9DC9-871C5C9AFA96} = {75BF65C4-3ED8-49E9-B5F2-6B0583AC5929}
+		{5CE2B349-C61B-4FC7-A661-EAFC9A4C459C} = {450AA9B1-A4BB-483F-9159-AE688FCCD5A6}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FDAE6BED-5D2E-4B71-86E6-2E9C7CAF2C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -33,5 +38,9 @@ Global
 		{4D3E53DA-080D-4462-9DC9-871C5C9AFA96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D3E53DA-080D-4462-9DC9-871C5C9AFA96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D3E53DA-080D-4462-9DC9-871C5C9AFA96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CE2B349-C61B-4FC7-A661-EAFC9A4C459C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CE2B349-C61B-4FC7-A661-EAFC9A4C459C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CE2B349-C61B-4FC7-A661-EAFC9A4C459C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CE2B349-C61B-4FC7-A661-EAFC9A4C459C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
