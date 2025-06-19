@@ -80,7 +80,7 @@ internal static class TypeExtensions {
   /// True if the current type symbol represents the same type as the specified target type; otherwise, false.
   /// </returns>
   public static bool IsSameType(this IArrayTypeSymbol type, Type targetType) {
-    return targetType.IsArray && type.ElementType.IsSameType(targetType.GetElementType()!);
+    return targetType.IsArray && targetType.GetArrayRank() == type.Rank && type.ElementType.IsSameType(targetType.GetElementType()!);
   }
 
   /// <summary>

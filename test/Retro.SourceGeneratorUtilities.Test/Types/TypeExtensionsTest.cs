@@ -32,7 +32,23 @@ public class TypeExtensionsTest {
             typeof(List<int>),
             compilation.GetTypeByMetadataName("System.Collections.Generic.List`1")
                 ?.Construct(compilation.GetSpecialType(SpecialType.System_Int32))
-        }
+        },
+        
+        // Interface vs concrete type
+        { typeof(IEnumerable<>), compilation.GetTypeByMetadataName("System.Collections.Generic.IEnumerable`1") },
+
+        // Different generic parameter counts
+        { typeof(Func<>), compilation.GetTypeByMetadataName("System.Func`1") },
+        { typeof(Func<,>), compilation.GetTypeByMetadataName("System.Func`2") },
+
+        // Array types
+        { typeof(int[]), compilation.CreateArrayTypeSymbol(compilation.GetSpecialType(SpecialType.System_Int32)) },
+        { typeof(string[]), compilation.CreateArrayTypeSymbol(compilation.GetSpecialType(SpecialType.System_String)) },
+        { typeof(int[,]), compilation.CreateArrayTypeSymbol(compilation.GetSpecialType(SpecialType.System_Int32), 2) },
+
+        // Pointer types
+        { typeof(void*), compilation.CreatePointerTypeSymbol(compilation.GetTypeByMetadataName("System.Void")!) },
+        { typeof(int*), compilation.CreatePointerTypeSymbol(compilation.GetSpecialType(SpecialType.System_Int32)) }
     };
     
     Assert.Multiple(() => {
@@ -50,6 +66,34 @@ public class TypeExtensionsTest {
 
       Assert.That(typeSymbols[typeof(List<int>)]?.IsSameType(typeof(List<string>)), Is.False,
                   "List<int> should not match List<string>");
+      
+      // Generic interface vs concrete type
+      Assert.That(typeSymbols[typeof(IEnumerable<>)]?.IsSameType(typeof(List<>)), Is.False,
+                  "IEnumerable<T> should not match List<T>");
+
+      // Different generic parameter counts
+      Assert.That(typeSymbols[typeof(Func<>)]?.IsSameType(typeof(Func<,>)), Is.False,
+                  "Func<T> should not match Func<T1,T2>");
+
+      // Array type tests
+      Assert.That(typeSymbols[typeof(int[])]?.IsSameType(typeof(string[])), Is.False,
+                  "int[] should not match string[]");
+
+      Assert.That(typeSymbols[typeof(int[])]?.IsSameType(typeof(int[,])), Is.False,
+                  "int[] should not match int[,]");
+
+      Assert.That(typeSymbols[typeof(int[])]?.IsSameType(typeof(int)), Is.False,
+                  "int[] should not match int");
+
+      // Pointer type tests
+      Assert.That(typeSymbols[typeof(void*)]?.IsSameType(typeof(int*)), Is.False,
+                  "void* should not match int*");
+
+      Assert.That(typeSymbols[typeof(int*)]?.IsSameType(typeof(int)), Is.False,
+                  "int* should not match int");
+
+      Assert.That(typeSymbols[typeof(int*)]?.IsSameType(typeof(int[])), Is.False,
+                  "int* should not match int[]");
     });
   }
 
