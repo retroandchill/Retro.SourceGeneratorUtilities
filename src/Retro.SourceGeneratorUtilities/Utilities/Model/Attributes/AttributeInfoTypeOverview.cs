@@ -56,6 +56,16 @@ public record AttributeInfoTypeOverview(INamedTypeSymbol ModelSymbol, INamedType
   /// </remarks>
   public bool IsValueType => ModelSymbol.IsValueType;
 
+  /// <summary>
+  /// Gets a value indicating whether the model type is an unbound generic type.
+  /// </summary>
+  /// <remarks>
+  /// An unbound generic type is a type that defines generic parameters but does not specify
+  /// any specific type arguments. This property checks if the model type represented by
+  /// <see cref="INamedTypeSymbol"/> is such a type.
+  /// </remarks>
+  public bool IsUnboundGeneric => AttributeSymbol.IsGenericType && AttributeSymbol.TypeArguments.All(a => a is ITypeParameterSymbol);
+
 
   /// <summary>
   /// Gets the constructors available for the attribute type overview.

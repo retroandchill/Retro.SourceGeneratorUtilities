@@ -35,7 +35,7 @@ public static class {{Name}}Extensions {
     }
     {{/ChildClasses}}
 
-    if (!data.AttributeClass.IsSameType(typeof({{AttributeTypeofName}}))) {
+    if ({{#IsUnboundGeneric}}!data.AttributeClass.IsGenericType || {{/IsUnboundGeneric}}!data.AttributeClass{{#IsUnboundGeneric}}.ConstructedFrom{{/IsUnboundGeneric}}.IsSameType(typeof({{AttributeTypeofName}}))) {
       info = {{#IsValueType}}default{{/IsValueType}}{{^IsValueType}}null{{/IsValueType}};
       return false;
     }
