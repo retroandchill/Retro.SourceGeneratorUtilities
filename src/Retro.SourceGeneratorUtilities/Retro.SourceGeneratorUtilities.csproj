@@ -22,10 +22,35 @@
     <Authors>Retro &amp; Chill</Authors>
 
     <Description>Common utilities for use in Source Generators.</Description>
+
+    <Version>0.1.0</Version>
+
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/retroandchill/Retro.SourceGeneratorUtilities</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/retroandchill/Retro.SourceGeneratorUtilities</PackageProjectUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>generators utilities boilerplate</PackageTags>
+    <PackageReleaseNotes>Initial Release</PackageReleaseNotes>
+
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <PropertyGroup>
     <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DocumentationFile>D:\dev\Retro.SourceGeneratorUtilities\src\Retro.SourceGeneratorUtilities\bin\Debug\netstandard2.0\Retro.SourceGeneratorUtilities.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DocumentationFile>D:\dev\Retro.SourceGeneratorUtilities\src\Retro.SourceGeneratorUtilities\bin\Release\netstandard2.0\Retro.SourceGeneratorUtilities.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
