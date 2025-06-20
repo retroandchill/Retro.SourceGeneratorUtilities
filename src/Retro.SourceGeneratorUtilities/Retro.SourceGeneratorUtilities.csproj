@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <IsPackable>false</IsPackable>
+    <IsPackable>true</IsPackable>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -16,6 +16,12 @@
     <PackageId>Retro.SourceGeneratorUtilities</PackageId>
 
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\netstandard2.0\</OutputPath>
+
+    <Title>Retro.SourceGeneratorUtilities</Title>
+
+    <Authors>Retro &amp; Chill</Authors>
+
+    <Description>Common utilities for use in Source Generators.</Description>
   </PropertyGroup>
 
   <PropertyGroup>
