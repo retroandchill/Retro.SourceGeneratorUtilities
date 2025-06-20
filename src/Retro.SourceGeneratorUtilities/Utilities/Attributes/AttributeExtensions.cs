@@ -99,7 +99,7 @@ internal static class AttributeExtensions {
         .SingleOrDefault(a => a.AttributeClass?.IsAssignableTo<AttributeUsageAttribute>() ?? false);
 
     if (attributeUsage is null) {
-      return new AttributeUsageInfo();
+      return new AttributeUsageInfo(AttributeTargets.All);
     }
 
     if (!attributeUsage.HasMatchingConstructor(typeof(AttributeTargets))) {
