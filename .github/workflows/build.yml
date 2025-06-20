@@ -39,7 +39,6 @@ jobs:
           key: ${{ runner.os }}-dotnet
           restore-keys: ${{ runner.os }}-dotnet
       - name: Install dotnet-coverage
-        if: steps.cache-dotnet-tools.outputs.cache-hit != 'true'
         shell: powershell
         run: dotnet tool install --global dotnet-coverage
       - name: Install SonarQube Cloud scanner
@@ -53,7 +52,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"retroandchill_Retro.SourceGeneratorUtilities" /o:"fcorso2016" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.exclusions="examples/**/*"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"retroandchill_Retro.SourceGeneratorUtilities" /o:"fcorso2016" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml /d:sonar.exclusions="example/**/*"
           dotnet build
           dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
