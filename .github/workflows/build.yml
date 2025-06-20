@@ -39,7 +39,6 @@ jobs:
           key: ${{ runner.os }}-dotnet
           restore-keys: ${{ runner.os }}-dotnet
       - name: Install dotnet-coverage
-        if: steps.cache-dotnet-tools.outputs.cache-hit != 'true'
         shell: powershell
         run: dotnet tool install --global dotnet-coverage
       - name: Install SonarQube Cloud scanner
