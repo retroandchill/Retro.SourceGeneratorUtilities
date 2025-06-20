@@ -77,6 +77,15 @@ public record AttributeInfoTypeOverview(INamedTypeSymbol ModelSymbol, INamedType
   public required ImmutableArray<AttributeInfoConstructorOverview> Constructors { get; init; }
 
   /// <summary>
+  /// Gets the collection of type parameters for the attribute type.
+  /// </summary>
+  /// <remarks>
+  /// This property provides an immutable array of <see cref="AttributeTypeParameterOverview"/>
+  /// instances that describe the type parameters defined for the attribute type.
+  /// </remarks>
+  public required ImmutableArray<AttributeTypeParameterOverview> TypeParameters { get; init; }
+
+  /// <summary>
   /// Gets the collection of properties associated with the type overview.
   /// </summary>
   /// <remarks>
