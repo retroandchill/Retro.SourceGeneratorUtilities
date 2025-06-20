@@ -38,6 +38,9 @@
 
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -78,9 +81,14 @@
   </Target>
 
   <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="\" />
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs" Visible="false"/>
     <None Include="$(OutputPath)\$(AssemblyName).pdb" Pack="true" PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs" Visible="false"/>
     <None Include="$(PKGHandlebars_Net)\lib\netstandard2.0\Handlebars.dll" Pack="true" PackagePath="analyzers/roslyn$(ROSLYN_VERSION)/dotnet/cs" Visible="false"/>
+    <None Update="icon.png">
+      <Pack>True</Pack>
+      <PackagePath/>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
