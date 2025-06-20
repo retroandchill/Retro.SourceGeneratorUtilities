@@ -5,6 +5,8 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+  release:
+    types: [published]
     
 env:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
