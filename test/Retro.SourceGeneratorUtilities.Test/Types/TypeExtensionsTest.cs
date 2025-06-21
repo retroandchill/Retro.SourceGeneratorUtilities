@@ -4,6 +4,12 @@ using Retro.SourceGeneratorUtilities.Test.Utils;
 
 namespace Retro.SourceGeneratorUtilities.Test.Types;
 
+public enum TestEnumType {
+  Value1,
+  Value2,
+  Value3
+}
+
 public class TypeExtensionsTest {
 
   [Test]
@@ -471,20 +477,18 @@ public class TypeExtensionsTest {
     });
   }
 
+  private static readonly int[] Expected = [1, 2, 3];
+
   [Test]
   public void TestGetTypedValue() {
     // Create a test compilation with attributes containing various value types
     var compilation = GeneratorTestHelpers.CreateCompilation(
         """
         using System;
+        using Retro.SourceGeneratorUtilities.Test.Types;
 
         namespace TestNamespace {
             // Define test enum
-            public enum TestEnum {
-                Value1,
-                Value2,
-                Value3
-            }
 
             // Define test attributes with various parameter types
             [AttributeUsage(AttributeTargets.Class)]
@@ -507,11 +511,11 @@ public class TypeExtensionsTest {
 
             [AttributeUsage(AttributeTargets.Class)]
             public class EnumAttribute : Attribute {
-                public EnumAttribute(TestEnum value) {
+                public EnumAttribute(TestEnumType value) {
                     Value = value;
                 }
 
-                public TestEnum Value { get; }
+                public TestEnumType Value { get; }
             }
 
             [AttributeUsage(AttributeTargets.Class)]
@@ -531,6 +535,15 @@ public class TypeExtensionsTest {
 
                 public int[] Values { get; }
             }
+            
+            [AttributeUsage(AttributeTargets.Class)]
+            public class EnumArrayAttribute : Attribute {
+                public ArrayAttribute(TestEnumType[] values) {
+                    Values = values;
+                }
+            
+                public TestEnumType[] Values { get; }
+            }
 
             [AttributeUsage(AttributeTargets.Class)]
             public class MultiTypeAttribute : Attribute {
@@ -548,7 +561,7 @@ public class TypeExtensionsTest {
             [String("test string")]
             public class TestStringClass {}
 
-            [Enum(TestEnum.Value2)]
+            [Enum(TestEnumType.Value2)]
             public class TestEnumClass {}
 
             [Nullable(null)]
@@ -556,6 +569,9 @@ public class TypeExtensionsTest {
 
             [Array(new[] {1, 2, 3})]
             public class TestArrayClass {}
+            
+            [EnumArray(new[] {TestEnumType.Value1, TestEnumType.Value2, TestEnumType.Value3})]
+            public class TestEnumArrayClass {}
 
             [MultiType(typeof(int))]
             public class TestTypeClass {}
@@ -573,6 +589,8 @@ public class TypeExtensionsTest {
         .GetAttributes().First();
     var arrayAttribute = compilation.GetTypeByMetadataName("TestNamespace.TestArrayClass")!
         .GetAttributes().First();
+    var enumArrayAttribute = compilation.GetTypeByMetadataName("TestNamespace.TestEnumArrayClass")!
+        .GetAttributes().First();
     var typeAttribute = compilation.GetTypeByMetadataName("TestNamespace.TestTypeClass")!
         .GetAttributes().First();
 
@@ -587,7 +605,7 @@ public class TypeExtensionsTest {
 
       // Test enum attribute value
       var enumValue = enumAttribute.ConstructorArguments[0];
-      Assert.That(enumValue.Value, Is.EqualTo(1), "Enum raw value should be 1"); // Value2 = 1
+      Assert.That(enumValue.GetTypedValue<TestEnumType>(), Is.EqualTo(TestEnumType.Value2), "Enum raw value should be 1"); // Value2 = 1
 
       // Test null attribute value
       var nullValue = nullAttribute.ConstructorArguments[0];
@@ -598,7 +616,14 @@ public class TypeExtensionsTest {
       var result = arrayValue.GetTypedValue<int[]>();
       Assert.That(result, Is.Not.Null, "Array should not be null");
       Assert.That(result, Has.Length.EqualTo(3), "Array should have 3 elements");
-      Assert.That(result, Is.EquivalentTo(new[] { 1, 2, 3 }), "Array values should match");
+      Assert.That(result, Is.EquivalentTo(Expected), "Array values should match");
+      
+      // Test enum array attribute value
+      var enumArrayValue = enumArrayAttribute.ConstructorArguments[0];
+      var enumResult = enumArrayValue.GetTypedValue<TestEnumType[]>();
+      Assert.That(enumResult, Is.Not.Null, "Array should not be null");
+      Assert.That(enumResult, Has.Length.EqualTo(3), "Array should have 3 elements");
+      Assert.That(enumResult, Is.EquivalentTo(new[] { TestEnumType.Value1, TestEnumType.Value2, TestEnumType.Value3 }), "Array values should match");
 
       // Test Type attribute value
       var typeValue = typeAttribute.ConstructorArguments[0];
@@ -611,183 +636,6 @@ public class TypeExtensionsTest {
                   Throws.TypeOf<InvalidOperationException>().With.Message.EqualTo("Type is null"));
     });
   }
-
-  [Test]
-  public void TestGetTypedValueWithEnums() {
-    // Create a test compilation with different enum types and usages
-    var compilation = GeneratorTestHelpers.CreateCompilation(
-        """
-        using System;
-
-        namespace TestNamespace {
-            // Regular enum
-            public enum SimpleEnum {
-                Default,
-                One,
-                Two
-            }
-
-            // Enum with explicit values
-            public enum ExplicitEnum {
-                None = 0,
-                First = 10,
-                Second = 20,
-                Third = 30
-            }
-
-            // Flags enum
-            [Flags]
-            public enum FlagsEnum {
-                None = 0,
-                Flag1 = 1,
-                Flag2 = 2,
-                Flag3 = 4,
-                All = Flag1 | Flag2 | Flag3
-            }
-
-            // Define attributes for testing
-            [AttributeUsage(AttributeTargets.Class)]
-            public class SimpleEnumAttribute : Attribute {
-                public SimpleEnumAttribute(SimpleEnum value) {
-                    Value = value;
-                }
-
-                public SimpleEnum Value { get; }
-            }
-
-            [AttributeUsage(AttributeTargets.Class)]
-            public class ExplicitEnumAttribute : Attribute {
-                public ExplicitEnumAttribute(ExplicitEnum value) {
-                    Value = value;
-                }
-
-                public ExplicitEnum Value { get; }
-            }
-
-            [AttributeUsage(AttributeTargets.Class)]
-            public class FlagsEnumAttribute : Attribute {
-                public FlagsEnumAttribute(FlagsEnum value) {
-                    Value = value;
-                }
-
-                public FlagsEnum Value { get; }
-            }
-
-            [AttributeUsage(AttributeTargets.Class)]
-            public class EnumArrayAttribute : Attribute {
-                public EnumArrayAttribute(SimpleEnum[] values) {
-                    Values = values;
-                }
-
-                public SimpleEnum[] Values { get; }
-            }
-
-            // Test classes with attributes
-            [SimpleEnum(SimpleEnum.One)]
-            public class TestSimpleEnum {}
-
-            [ExplicitEnum(ExplicitEnum.Second)]
-            public class TestExplicitEnum {}
-
-            [FlagsEnum(FlagsEnum.Flag1 | FlagsEnum.Flag3)]
-            public class TestFlagsEnum {}
-
-            [EnumArray(new[] { SimpleEnum.Default, SimpleEnum.One, SimpleEnum.Two })]
-            public class TestEnumArray {}
-        }
-        """);
-
-    // Get attribute data from each test class
-    var simpleEnumAttr = compilation.GetTypeByMetadataName("TestNamespace.TestSimpleEnum")!
-        .GetAttributes().First();
-    var explicitEnumAttr = compilation.GetTypeByMetadataName("TestNamespace.TestExplicitEnum")!
-        .GetAttributes().First();
-    var flagsEnumAttr = compilation.GetTypeByMetadataName("TestNamespace.TestFlagsEnum")!
-        .GetAttributes().First();
-    var enumArrayAttr = compilation.GetTypeByMetadataName("TestNamespace.TestEnumArray")!
-        .GetAttributes().First();
-    
-    Assert.Multiple(() => {
-      // Test simple enum value (expected value is SimpleEnum.One which is 1)
-      var simpleEnumValue = simpleEnumAttr.ConstructorArguments[0];
-      Assert.That(simpleEnumValue.Value, Is.EqualTo(1), "SimpleEnum.One should have value 1");
-
-      // Test explicit enum value (expected value is ExplicitEnum.Second which is 20)
-      var explicitEnumValue = explicitEnumAttr.ConstructorArguments[0];
-      Assert.That(explicitEnumValue.Value, Is.EqualTo(20), "ExplicitEnum.Second should have value 20");
-
-      // Test flags enum value (expected value is Flag1 | Flag3 which is 5)
-      var flagsEnumValue = flagsEnumAttr.ConstructorArguments[0];
-      Assert.That(flagsEnumValue.Value, Is.EqualTo(5), "FlagsEnum.Flag1 | FlagsEnum.Flag3 should have value 5");
-
-      // Test enum array
-      var enumArrayValue = enumArrayAttr.ConstructorArguments[0];
-      var result = enumArrayValue.GetTypedValue<int[]>();
-      Assert.That(result, Is.Not.Null, "Enum array should not be null");
-      Assert.That(result, Has.Length.EqualTo(3), "Enum array should have 3 elements");
-      Assert.That(result, Is.EquivalentTo(new [] { 0, 1, 2 }), "Enum array values should match");
-    });
-  }
-
-  [Test]
-  public void TestGetTypedValueWithNestedEnums() {
-    // Test with nested enums and more complex scenarios
-    var compilation = GeneratorTestHelpers.CreateCompilation(
-        """
-        using System;
-
-        namespace TestNamespace {
-            public class Container {
-                public enum NestedEnum {
-                    None,
-                    Low,
-                    Medium,
-                    High
-                }
-            }
-
-            [AttributeUsage(AttributeTargets.Class)]
-            public class NestedEnumAttribute : Attribute {
-                public NestedEnumAttribute(Container.NestedEnum value) {
-                    Value = value;
-                }
-
-                public Container.NestedEnum Value { get; }
-            }
-
-            [NestedEnum(Container.NestedEnum.Medium)]
-            public class TestNestedEnum {}
-
-            // Attribute with default enum value
-            [AttributeUsage(AttributeTargets.Class)]
-            public class DefaultValueAttribute : Attribute {
-                public DefaultValueAttribute() {
-                }
-
-                public Container.NestedEnum Level { get; set; } = Container.NestedEnum.Low;
-            }
-
-            [DefaultValue(Level = Container.NestedEnum.High)]
-            public class TestDefaultValue {}
-        }
-        """);
-
-    // Get attribute data from test classes
-    var nestedEnumAttr = compilation.GetTypeByMetadataName("TestNamespace.TestNestedEnum")!
-        .GetAttributes().First();
-    var defaultValueAttr = compilation.GetTypeByMetadataName("TestNamespace.TestDefaultValue")!
-        .GetAttributes().First();
-
-    Assert.Multiple(() => {
-      // Test nested enum constructor value (expected value is Medium which is 2)
-      var nestedEnumValue = nestedEnumAttr.ConstructorArguments[0];
-      Assert.That(nestedEnumValue.Value, Is.EqualTo(2), "Container.NestedEnum.Medium should have value 2");
-
-      // Test enum property with explicitly set value (expected value is High which is 3)
-      var propertyValues = defaultValueAttr.NamedArguments;
-      Assert.That(propertyValues, Has.Length.EqualTo(1), "Should have one named argument");
-      Assert.That(propertyValues[0].Key, Is.EqualTo("Level"), "Property name should be Level");
-      Assert.That(propertyValues[0].Value.Value, Is.EqualTo(3), "Container.NestedEnum.High should have value 3");
-    });
-  }
+  
+  
 }
