@@ -76,7 +76,11 @@ internal static class AttributeInfoTypeExtensions {
         .OfType<INamedTypeSymbol>()
         .Select(x => x.IsGenericType ? x.ConstructedFrom : x)
         .Single();
-    
+
+    var genericParams = attributeType is INamedTypeSymbol { IsGenericType: true } genericType
+        ? genericType.TypeArguments
+            .Count(t => t.TypeKind == TypeKind.TypeParameter)
+        : 0;
     var attributeConstructors = attributeType.Constructors;
     var modelConstructors = typeSymbol.Constructors;
 
@@ -89,7 +93,7 @@ internal static class AttributeInfoTypeExtensions {
                             .Skip(attributeType.TypeParameters.Length)
                             .Select((p, j) => new AttributeInfoConstructorParamOverview(p) {
                                 Index = j,
-                                IsLast = j == m.Parameters.Length - 1
+                                IsLast = j == m.Parameters.Length - genericParams - 1
                             })
                             .ToImmutableList(),
                         IsLast = i == attributeConstructors.Length - 1
