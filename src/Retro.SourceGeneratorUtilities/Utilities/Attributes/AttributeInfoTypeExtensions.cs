@@ -125,9 +125,13 @@ internal static class AttributeInfoTypeExtensions {
         })
         .ToImmutableArray();
 
+    var usageInfo = attributeType.GetUsageInfo();
+
     return validatedConstructors
         .Combine(validatedProperties,
                  (c, p) => new AttributeInfoTypeOverview(typeSymbol, attributeType) {
+                     AllowMultiple = usageInfo.AllowMultiple,
+                     ValidOn = usageInfo.ValidOn,
                      Constructors = c,
                      TypeParameters = typeParameters,
                      Properties = p,
@@ -179,6 +183,12 @@ internal static class AttributeInfoTypeExtensions {
 
       if (targetParameter.Type.IsSameType<Type>()) {
         if (modelParameter.Type.IsSameType<ITypeSymbol>()) continue;
+
+        return false;
+      }
+
+      if (targetParameter.Type.IsSameType<Type[]>()) {
+        if (modelParameter.Type.IsSameType<ITypeSymbol[]>()) continue;
 
         return false;
       }
