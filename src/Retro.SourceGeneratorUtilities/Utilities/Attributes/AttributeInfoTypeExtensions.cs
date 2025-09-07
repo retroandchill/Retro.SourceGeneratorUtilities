@@ -222,6 +222,11 @@ internal static class AttributeInfoTypeExtensions {
         if (!modelProperty.Type.IsSameType<ITypeSymbol>()) continue;
         return new DiagnosticResult<IPropertySymbol?>(modelProperty);
       }
+      
+      if (targetProperty.Type.IsSameType<Type[]>()) {
+        if (!modelProperty.Type.IsSameType<ITypeSymbol[]>()) continue;
+        return new DiagnosticResult<IPropertySymbol?>(modelProperty);
+      }
 
       if (targetProperty.Type.Equals(modelProperty.Type, SymbolEqualityComparer.Default)) {
         return new DiagnosticResult<IPropertySymbol?>(modelProperty);

@@ -1,19 +1,17 @@
 ﻿namespace Retro.SourceGeneratorUtilities.Generator.Sample.Attributes;
 
-[AttributeUsage(AttributeTargets.Struct)]
-internal class DataHandleAttribute<T> : Attribute where T : struct
+internal abstract class DataHandleBaseAttribute : Attribute
 {
-  public DataHandleAttribute()
-  {
-        
-  }
-    
-  public DataHandleAttribute(Type provider, string repositoryName)
-  {
-    Provider = provider;
-    RepositoryName = repositoryName;
-  }
-
-  public Type? Provider { get; }
-  public string? RepositoryName { get; }
+  public Type[] ComparableTypes { get; init; } = [];
 }
+
+[AttributeUsage(AttributeTargets.Struct)]
+internal class DataHandleAttribute(Type provider, string repositoryName) : DataHandleBaseAttribute
+{
+  public Type Provider { get; } = provider;
+  public string RepositoryName { get; } = repositoryName;
+}
+
+[AttributeUsage(AttributeTargets.Struct)]
+internal class DataHandleAttribute<T> : DataHandleBaseAttribute
+    where T : struct;

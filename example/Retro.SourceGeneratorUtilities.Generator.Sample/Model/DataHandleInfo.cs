@@ -1,16 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Retro.SourceGeneratorUtilities.Generator.Sample.Attributes;
 using Retro.SourceGeneratorUtilities.Utilities.Attributes;
 
 namespace Retro.SourceGeneratorUtilities.Generator.Sample.Model;
 
-[AttributeInfoType(typeof(DataHandleAttribute<>))]
-public readonly record struct DataHandleAttributeInfo(ITypeSymbol EntryType, ITypeSymbol? Type, string? RepositoryName)
+[AttributeInfoType<DataHandleBaseAttribute>]
+public record DataHandleBaseInfo
 {
-  // ReSharper disable once IntroduceOptionalParameters.Global
-  public DataHandleAttributeInfo(ITypeSymbol entryType) : this(entryType, null, null) {  }
-    
-  [MemberNotNullWhen(true, nameof(Type), nameof(RepositoryName))]
-  public bool IsValid => Type is not null && RepositoryName is not null;
+  public ITypeSymbol[] ComparableTypes { get; init; }
 }
+
+[AttributeInfoType<DataHandleAttribute>]
+public record DataHandleInfo(ITypeSymbol Type, string RepositoryName) : DataHandleBaseInfo;
+
+[AttributeInfoType(typeof(DataHandleAttribute<>))]
+public record DataHandleInfoOneParam(ITypeSymbol EntryType) : DataHandleBaseInfo;
