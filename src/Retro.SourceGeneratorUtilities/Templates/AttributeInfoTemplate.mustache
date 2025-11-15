@@ -129,7 +129,7 @@ internal static class {{Name}}Extensions {
     
   public static bool TryGet{{Name}}(this INamedTypeSymbol type, {{^IsValueType}}[NotNullWhen(true)] {{/IsValueType}}out {{Name}}{{^IsValueType}}?{{/IsValueType}} info) {
     {{^ValidOnAnyType}}
-    if (type.TypeKind is not {{#ValidOnTypes}}TypeKind.{{Kind}}{{^IsLast}} or {{/IsLast}}{{/ValidOnTypes}}) {
+    if (type.TypeKind is {{#ValidOnTypes}}not TypeKind.{{Kind}}{{^IsLast}} and {{/IsLast}}{{/ValidOnTypes}}) {
       throw new InvalidOperationException("The attribute '{{AttributeTypeofName}}' is only valid one of the following types: {{#ValidOnTypes}}{{Kind}}{{^IsLast}}, {{/IsLast}}{{/ValidOnTypes}}");
     }
 
@@ -235,7 +235,7 @@ internal static class {{Name}}Extensions {
     
   public static IEnumerable<{{Name}}> Get{{Name}}s(this INamedTypeSymbol type) {
     {{^ValidOnAnyType}}
-    if (type.TypeKind is not {{#ValidOnTypes}}TypeKind.{{Kind}}{{^IsLast}} or {{/IsLast}}{{/ValidOnTypes}}) {
+    if (type.TypeKind is {{#ValidOnTypes}}not TypeKind.{{Kind}}{{^IsLast}} and {{/IsLast}}{{/ValidOnTypes}}) {
       throw new InvalidOperationException("The attribute '{{AttributeTypeofName}}' is only valid one of the following types: {{#ValidOnTypes}}{{Kind}}{{^IsLast}}, {{/IsLast}}{{/ValidOnTypes}}");
     }
 
