@@ -4,7 +4,7 @@ using Retro.SourceGeneratorUtilities.Utilities.Attributes;
 
 namespace Retro.SourceGeneratorUtilities.Results.Test.Attributes;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public class PropertyOnlyAttribute : Attribute {
   
   public int Property { get; init; } = 1;
@@ -43,20 +43,34 @@ public class AttributeInfoTest {
 
                                     [PropertyOnly(Property = 2)]
                                     public class TestClass;
+                                    
+                                    [PropertyOnly(Property = 5)]
+                                    public struct TestStruct;
                                     """;
 
     var compilation = GeneratorTestHelpers.CreateCompilation(classDeclaration);
     var compiledClass = compilation.GetTypeByMetadataName("TestNamespace.TestClass");
-    Assert.That(compiledClass, Is.Not.Null);
+    var compiledStruct = compilation.GetTypeByMetadataName("TestNamespace.TestStruct");
+    Assert.Multiple(() => {
+      Assert.That(compiledClass, Is.Not.Null);
+      Assert.That(compiledStruct, Is.Not.Null);
+    });
 
-    var attributes = compiledClass.GetAttributes()
+    var classAttributes = compiledClass.GetAttributes()
         .Where(x => x.AttributeClass?.Name == nameof(PropertyOnlyAttribute))
         .ToImmutableList();
-    Assert.That(attributes, Has.Count.EqualTo(1));
-    var attribute = attributes[0];
+    Assert.That(classAttributes, Has.Count.EqualTo(1));
 
-    var info = attribute.GetPropertyOnlyAttributeInfo();
-    Assert.That(info.Property, Is.EqualTo(2));
+    var classInfo = compiledClass.GetPropertyOnlyAttributeInfo();
+    Assert.That(classInfo.Property, Is.EqualTo(2));
+    
+    var structAttributes = compiledStruct.GetAttributes()
+        .Where(x => x.AttributeClass?.Name == nameof(PropertyOnlyAttribute))
+        .ToImmutableList();
+    Assert.That(structAttributes, Has.Count.EqualTo(1));
+
+    var structInfo = compiledStruct.GetPropertyOnlyAttributeInfo();
+    Assert.That(structInfo.Property, Is.EqualTo(5));
   }
   
   [Test]
